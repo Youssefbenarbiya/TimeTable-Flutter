@@ -18,37 +18,76 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// Data Service to fetch data from JSON server
 class DataService {
   static const String baseUrl = 'http://localhost:3000';
 
   Future<List<String>> fetchClasses() async {
-    final response = await http.get(Uri.parse('$baseUrl/classes'));
-    if (response.statusCode == 200) {
-      List data = jsonDecode(response.body);
-      return data.map((item) => item['name'].toString()).toList();
-    } else {
-      throw Exception('Failed to load classes');
+    try {
+      final response = await http.get(Uri.parse('$baseUrl/classes'));
+      if (response.statusCode == 200) {
+        List data = jsonDecode(response.body);
+        return data.map((item) => item['name'].toString()).toList();
+      } else {
+        throw Exception('Failed to load classes');
+      }
+    } catch (e) {
+      print('Error fetching classes: $e');
+      return [];
     }
   }
 
   Future<List<String>> fetchTeachers() async {
-    final response = await http.get(Uri.parse('$baseUrl/teachers'));
-    if (response.statusCode == 200) {
-      List data = jsonDecode(response.body);
-      return data.map((item) => item['name'].toString()).toList();
-    } else {
-      throw Exception('Failed to load teachers');
+    try {
+      final response = await http.get(Uri.parse('$baseUrl/teachers'));
+      if (response.statusCode == 200) {
+        List data = jsonDecode(response.body);
+        return data.map((item) => item['name'].toString()).toList();
+      } else {
+        throw Exception('Failed to load teachers');
+      }
+    } catch (e) {
+      print('Error fetching teachers: $e');
+      return [];
     }
   }
 
   Future<List<String>> fetchRooms() async {
-    final response = await http.get(Uri.parse('$baseUrl/rooms'));
-    if (response.statusCode == 200) {
-      List data = jsonDecode(response.body);
-      return data.map((item) => item['name'].toString()).toList();
-    } else {
-      throw Exception('Failed to load rooms');
+    try {
+      final response = await http.get(Uri.parse('$baseUrl/rooms'));
+      if (response.statusCode == 200) {
+        List data = jsonDecode(response.body);
+        return data.map((item) => item['name'].toString()).toList();
+      } else {
+        throw Exception('Failed to load rooms');
+      }
+    } catch (e) {
+      print('Error fetching rooms: $e');
+      return [];
+    }
+  }
+
+  Future<void> saveSessionData(String cellKey, String className, String teacherName, String roomName) async {
+    final data = {
+      "daySession": cellKey,
+      "class": className,
+      "teacher": teacherName,
+      "room": roomName
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/timetable'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(data),
+      );
+
+      if (response.statusCode == 201) {
+        print("Data saved successfully!");
+      } else {
+        throw Exception('Failed to save data');
+      }
+    } catch (e) {
+      print('Error saving data: $e');
     }
   }
 }
@@ -68,6 +107,7 @@ class _TimetableState extends State<Timetable> {
   List<String> classes = [];
   List<String> teachers = [];
   List<String> rooms = [];
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -84,14 +124,22 @@ class _TimetableState extends State<Timetable> {
         classes = fetchedClasses;
         teachers = fetchedTeachers;
         rooms = fetchedRooms;
+        isLoading = false;
       });
     } catch (e) {
-      print('Error fetching data: $e');
+      print('Error loading data: $e');
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return Center(child: CircularProgressIndicator());
+    }
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Table(
@@ -133,13 +181,13 @@ class _TimetableState extends State<Timetable> {
   }
 
   void _showCellDialog(BuildContext context, String cellKey) async {
+    String? selectedClass;
+    String? selectedTeacher;
+    String? selectedRoom;
+
     final selectedData = await showDialog<Map<String, String>>(
       context: context,
       builder: (BuildContext context) {
-        String? selectedClass;
-        String? selectedTeacher;
-        String? selectedRoom;
-
         return AlertDialog(
           title: Text("Select Details"),
           content: Column(
@@ -204,6 +252,14 @@ class _TimetableState extends State<Timetable> {
         timetableData[cellKey] =
             "${selectedData['class']}, ${selectedData['teacher']}, ${selectedData['room']}";
       });
+
+      // Save data to JSON server
+      await dataService.saveSessionData(
+        cellKey,
+        selectedData['class']!,
+        selectedData['teacher']!,
+        selectedData['room']!,
+      );
     }
   }
 }
