@@ -1,0 +1,67 @@
+{
+  "classes": [
+    {
+      "id": 1,
+      "name": "Math"
+    },
+    {
+      "id": 2,
+      "name": "Science"
+    },
+    {
+      "id": 3,
+      "name": "History"
+    }
+  ],
+  "teachers": [
+    {
+      "id": 1,
+      "name": "Mr. Smith"
+    },
+    {
+      "id": 2,
+      "name": "Ms. Johnson"
+    },
+    {
+      "id": 3,
+      "name": "Mrs. Brown"
+    }
+  ],
+  "rooms": [
+    {
+      "id": 1,
+      "name": "Room 101"
+    },
+    {
+      "id": 2,
+      "name": "Room 102"
+    },
+    {
+      "id": 3,
+      "name": "Room 103"
+    }
+  ],
+  "timetable": [
+    {
+      "id": 1,
+      "daySession": "Monday-Session 1",
+      "class": "Math",
+      "teacher": "Mr. Smith",
+      "room": "Room 101"
+    },
+    {
+      "daySession": "Monday-Session 2",
+      "class": "Science",
+      "teacher": "Ms. Johnson",
+      "room": "Room 103",
+      "id": 2
+    },
+    {
+      "daySession": "Friday-Session 1",
+      "class": "Math",
+      "teacher": "Mr. Smith",
+      "room": "Room 101",
+      "id": 3
+    }
+  ]
+}
