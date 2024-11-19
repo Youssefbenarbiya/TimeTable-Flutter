@@ -9,8 +9,16 @@
       "name": "Science"
     },
     {
-      "id": 3,
-      "name": "History"
+      "name": "History",
+      "id": 3
+    },
+    {
+      "name": "Geography",
+      "id": 4
+    },
+    {
+      "name": "",
+      "id": 5
     }
   ],
   "teachers": [
@@ -37,8 +45,8 @@
       "name": "Room 102"
     },
     {
-      "id": 3,
-      "name": "Room 103"
+      "name": "Room 103",
+      "id": 3
     }
   ],
   "timetable": [
@@ -62,6 +70,27 @@
       "teacher": "Mr. Smith",
       "room": "Room 101",
       "id": 3
+    },
+    {
+      "daySession": "Monday-Session 1",
+      "class": "Science",
+      "teacher": "Mr. Smith",
+      "room": "Room 101",
+      "id": 4
+    },
+    {
+      "daySession": "Tuesday-Session 1",
+      "class": "Science",
+      "teacher": "Ms. Johnson",
+      "room": "Room 102",
+      "id": 5
+    },
+    {
+      "daySession": "Monday-Session 1",
+      "class": "Science",
+      "teacher": "Mrs. Brown",
+      "room": "Room 103",
+      "id": 6
     }
   ]
 }
