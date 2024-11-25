@@ -15,10 +15,6 @@
     {
       "name": "Geography",
       "id": 4
-    },
-    {
-      "name": "",
-      "id": 5
     }
   ],
   "teachers": [
@@ -91,6 +87,48 @@
       "teacher": "Mrs. Brown",
       "room": "Room 103",
       "id": 6
+    },
+    {
+      "daySession": "Monday-Session 1",
+      "class": "Science",
+      "teacher": "Ms. Johnson",
+      "room": "Room 102",
+      "id": 7
+    },
+    {
+      "daySession": "Monday-Session 1",
+      "class": "Science",
+      "teacher": "Mrs. Brown",
+      "room": "Room 102",
+      "id": 8
+    },
+    {
+      "daySession": "Thursday-Session 2",
+      "class": "Science",
+      "teacher": "Ms. Johnson",
+      "room": "Room 103",
+      "id": 9
+    },
+    {
+      "daySession": "Thursday-Session 2",
+      "class": "Geography",
+      "teacher": "Mr. Smith",
+      "room": "",
+      "id": 10
+    },
+    {
+      "daySession": "Thursday-Session 2",
+      "class": "",
+      "teacher": "",
+      "room": "Room 102",
+      "id": 11
+    },
+    {
+      "daySession": "Thursday-Session 2",
+      "class": "Science",
+      "teacher": "Mr. Smith",
+      "room": "Room 102",
+      "id": 12
     }
   ]
 }

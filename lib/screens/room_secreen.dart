@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 import '../main.dart';
 import '../models/room_model.dart';
 
@@ -59,7 +59,8 @@ class _RoomScreenState extends State<RoomScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(roomModel == null ? 'Add Room' : 'Edit Room'),
+        title: Text(roomModel == null ? 'Add Room' : 'Edit Room',
+            style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
         content: TextField(
           onChanged: (value) => roomName = value,
           decoration: InputDecoration(labelText: 'Room Name'),
@@ -76,7 +77,7 @@ class _RoomScreenState extends State<RoomScreen> {
               }
               Navigator.of(context).pop();
             },
-            child: Text('Save'),
+            child: Text('Save', style: TextStyle(color: Colors.blue)),
           ),
           TextButton(
             onPressed: () {
@@ -93,33 +94,46 @@ class _RoomScreenState extends State<RoomScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Rooms'),
+        title: Text('Rooms', style: GoogleFonts.poppins()),
+        backgroundColor: Colors.blueAccent,
+        elevation: 0,
       ),
-      body: ListView.builder(
-        itemCount: rooms.length,
-        itemBuilder: (context, index) {
-          final roomModel = rooms[index];
-          return ListTile(
-            title: Text(roomModel.name),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: () => _showRoomDialog(roomModel: roomModel),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ListView.builder(
+          itemCount: rooms.length,
+          itemBuilder: (context, index) {
+            final roomModel = rooms[index];
+            return Card(
+              elevation: 4,
+              margin: EdgeInsets.symmetric(vertical: 8),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+              child: ListTile(
+                title: Text(roomModel.name,
+                    style: GoogleFonts.poppins(fontSize: 18)),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.edit, color: Colors.blue),
+                      onPressed: () => _showRoomDialog(roomModel: roomModel),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red),
+                      onPressed: () => deleteRoom(roomModel.id),
+                    ),
+                  ],
                 ),
-                IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: () => deleteRoom(roomModel.id),
-                ),
-              ],
-            ),
-          );
-        },
+              ),
+            );
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showRoomDialog(),
         child: Icon(Icons.add),
+        backgroundColor: Colors.blueAccent,
       ),
     );
   }

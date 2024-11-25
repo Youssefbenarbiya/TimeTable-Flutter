@@ -1,6 +1,6 @@
 class TeacherModel {
   final int id;
-  final String name;
+  late final String name;
 
   TeacherModel({required this.id, required this.name});
 

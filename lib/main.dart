@@ -3,8 +3,10 @@ import 'package:emploi/models/class_model.dart';
 import 'package:emploi/screens/room_secreen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'models/room_model.dart';
+import 'models/teacher_model.dart';
 import 'screens/class_screen.dart';
 import 'screens/teacher_secreen.dart';
 
@@ -159,12 +161,12 @@ class DataService {
       return [];
     }
   }
-  Future<List<ClassModel>> fetchTeacherModels() async {
+  Future<List<Object>> fetchTeacherModels() async {
     try {
       final response = await http.get(Uri.parse('$baseUrl/teachers'));
       if (response.statusCode == 200) {
         List data = jsonDecode(response.body);
-        return data.map((item) => ClassModel.fromJson(item)).toList();
+        return data.map((item) => TeacherModel.fromJson(item)).toList();
       } else {
         throw Exception('Failed to load teachers');
       }
@@ -374,16 +376,25 @@ Future<void> deleteRoom(String id) async {
   }
 }
 }
-
 class Timetable extends StatefulWidget {
   @override
   _TimetableState createState() => _TimetableState();
 }
-
 class _TimetableState extends State<Timetable> {
-  final List<String> days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-  final List<String> sessions = ["Session 1", "Session 2", "Session 3", "Session 4"];
-  
+  final List<String> days = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday"
+  ];
+  final List<String> sessions = [
+    "Session 1",
+    "Session 2",
+    "Session 3",
+    "Session 4"
+  ];
+
   final Map<String, String> timetableData = {};
   final DataService dataService = DataService();
 
@@ -424,43 +435,110 @@ class _TimetableState extends State<Timetable> {
     }
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Table(
-        border: TableBorder.all(),
-        columnWidths: {
-          0: FixedColumnWidth(80.0),
-        },
-        children: [
-          TableRow(
-            children: [
-              TableCell(child: Center(child: Text("Days/Sessions"))),
-              ...sessions.map((session) => Center(child: Text(session))),
+      padding: const EdgeInsets.all(16.0),
+      child: SingleChildScrollView(
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.2),
+                spreadRadius: 5,
+                blurRadius: 10,
+                offset: Offset(0, 3), // changes position of shadow
+              ),
             ],
           ),
-          for (var day in days)
-            TableRow(
-              children: [
-                TableCell(child: Center(child: Text(day))),
-                ...sessions.map((session) {
-                  final cellKey = "$day-$session";
-                  return GestureDetector(
-                    onTap: () => _showCellDialog(context, cellKey),
-                    child: Container(
-                      height: 50,
-                      alignment: Alignment.center,
-                      color: Colors.grey[200],
-                      child: Text(
-                        timetableData[cellKey] ?? "Select",
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ],
-            ),
-        ],
+          child: Table(
+            border: TableBorder.all(color: Colors.blueGrey[300]!),
+            columnWidths: {
+              0: FixedColumnWidth(120.0),
+            },
+            children: [
+              TableRow(
+                decoration: BoxDecoration(color: Colors.blue[100]),
+                children: [
+                  TableCell(
+                      child: Center(
+                          child: Text("Days/Sessions",
+                              style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.bold, fontSize: 16)))),
+                  ...sessions.map((session) => Center(
+                      child: Text(session,
+                          style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.bold, fontSize: 16)))),
+                ],
+              ),
+              for (var day in days)
+                TableRow(
+                  children: [
+                    TableCell(
+                        child: Center(
+                            child: Text(day,
+                                style: GoogleFonts.poppins(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600)))),
+                    ...sessions.map((session) {
+                      final cellKey = "$day-$session";
+                      return GestureDetector(
+                        onTap: () => _showCellDialog(context, cellKey),
+                        child: MouseRegion(
+                          onEnter: (_) => _onHover(cellKey, true),
+                          onExit: (_) => _onHover(cellKey, false),
+                          child: AnimatedContainer(
+                            duration: Duration(milliseconds: 200),
+                            height: 60,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: timetableData[cellKey] != null
+                                  ? Colors.green[100]
+                                  : Colors.grey[200],
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: timetableData[cellKey] != null
+                                  ? []
+                                  : [
+                                      BoxShadow(
+                                          color: Colors.grey.withOpacity(0.3),
+                                          blurRadius: 5)
+                                    ],
+                            ),
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  if (timetableData[cellKey] != null)
+                                    Icon(Icons.check_circle,
+                                        color: Colors.green)
+                                  else
+                                    SizedBox.shrink(),
+                                  SizedBox(
+                                      width: timetableData[cellKey] != null
+                                          ? 8
+                                          : 0),
+                                  Text(
+                                    timetableData[cellKey] ?? "Select",
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.poppins(
+                                        color: Colors.black54),
+                                  ),
+                                ]),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ],
+                ),
+            ],
+          ),
+        ),
       ),
     );
+  }
+
+  void _onHover(String cellKey, bool isHovered) {
+    setState(() {
+      // You can handle hover effects here if needed
+    });
   }
 
   void _showCellDialog(BuildContext context, String cellKey) async {
@@ -472,59 +550,57 @@ class _TimetableState extends State<Timetable> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Select Details"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              DropdownButtonFormField<String>(
-                decoration: InputDecoration(labelText: 'Class'),
-                items: classes.map((String value) {
-                  return DropdownMenuItem(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (value) => selectedClass = value,
-              ),
-              DropdownButtonFormField<String>(
-                decoration: InputDecoration(labelText: 'Teacher'),
-                items: teachers.map((String value) {
-                  return DropdownMenuItem(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (value) => selectedTeacher = value,
-              ),
-              DropdownButtonFormField<String>(
-                decoration: InputDecoration(labelText: 'Room'),
-                items: rooms.map((String value) {
-                  return DropdownMenuItem(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (value) => selectedRoom = value,
-              ),
-            ],
-          ),
+          titleTextStyle:
+              GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold),
+          titlePadding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+          contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+          content: SingleChildScrollView(
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+            DropdownButtonFormField<String>(
+              decoration: InputDecoration(
+                  labelText: 'Class', border: OutlineInputBorder()),
+              items: classes
+                  .map((String value) =>
+                      DropdownMenuItem(value: value, child: Text(value)))
+                  .toList(),
+              onChanged: (value) => selectedClass = value,
+            ),
+            SizedBox(height: 8),
+            DropdownButtonFormField<String>(
+              decoration: InputDecoration(
+                  labelText: 'Teacher', border: OutlineInputBorder()),
+              items: teachers
+                  .map((String value) =>
+                      DropdownMenuItem(value: value, child: Text(value)))
+                  .toList(),
+              onChanged: (value) => selectedTeacher = value,
+            ),
+            SizedBox(height: 8),
+            DropdownButtonFormField<String>(
+              decoration: InputDecoration(
+                  labelText: 'Room', border: OutlineInputBorder()),
+              items: rooms
+                  .map((String value) =>
+                      DropdownMenuItem(value: value, child: Text(value)))
+                  .toList(),
+              onChanged: (value) => selectedRoom = value,
+            ),
+          ])),
+          actionsAlignment: MainAxisAlignment.end,
+          actionsPadding: EdgeInsets.symmetric(horizontal: 16.0),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop({
-                  'class': selectedClass ?? '',
-                  'teacher': selectedTeacher ?? '',
-                  'room': selectedRoom ?? '',
-                });
-              },
-              child: Text('Save'),
-            ),
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('Cancel')),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop({
+                    'class': selectedClass ?? '',
+                    'teacher': selectedTeacher ?? '',
+                    'room': selectedRoom ?? '',
+                  });
+                },
+                child: Text('Save')),
           ],
         );
       },
