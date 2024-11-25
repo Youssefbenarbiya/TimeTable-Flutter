@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../main.dart';
 import '../models/class_model.dart';
+import '../timetable_screen.dart';
 
 class ClassScreen extends StatefulWidget {
   @override
